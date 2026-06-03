@@ -1,4 +1,4 @@
-package twosum
+package array
 
 import (
 	"fmt"
@@ -15,3 +15,10 @@ func TestTwoSum(t *testing.T) {
     }
 }
 
+func TestLongestCommonPrefix(t *testing.T) {
+	got := LongestCommonPrefix([]string{"flower","flow","flight"})
+	want := "fl"
+	if !reflect.DeepEqual(got, want) {
+        t.Errorf("got %v, want %v", got, want)
+    }
+}
