@@ -53,3 +53,39 @@ func LongestCommonPrefix(strs []string) string {
     }
     return prefix
 }
+
+func LongestCommonPrefix2(strs []string) string {
+    n := len(strs)
+    if n <= 1 {
+        if n == 0 {
+            return ""
+        } else {
+            return strs[0]
+        }
+    }
+
+    minLen := len(strs[0])
+    prefix := strs[0]
+    minLenIdx := 0
+    for i := 1; i < n; i++ {
+        l := len(strs[i])
+        if minLen < l {
+            prefix = strs[i]
+            minLenIdx = i
+        }
+    }
+
+    for i, str := range(strs) {
+        if i == minLenIdx {
+            continue
+        }
+        for strings.Index(str, prefix) != 0 {
+            prefix = prefix[:len(prefix) - 1]
+            if prefix == "" {
+                return ""
+            }
+        }
+    }
+    return prefix
+
+}
