@@ -144,3 +144,138 @@ func TestInorderTraversalStk(t *testing.T) {
 		})
 	}
 }
+
+// TestPreorderTraversal checks various binary tree shapes using table-driven tests.
+func TestPreorderTraversal(t *testing.T) {
+	tests := []struct {
+		name string
+		root *TreeNode
+		want []int
+	}{
+		{
+			name: "Empty tree",
+			root: nil,
+			want: []int{},
+		},
+		{
+			name: "Single node tree",
+			root: &TreeNode{Val: 1},
+			want: []int{1},
+		},
+		{
+			name: "Left skewed tree (linear chain)",
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:  2,
+					Left: &TreeNode{Val: 3},
+				},
+			},
+			want: []int{1, 2, 3}, // Root -> Left -> Left
+		},
+		{
+			name: "Right skewed tree (linear chain)",
+			root: &TreeNode{
+				Val: 1,
+				Right: &TreeNode{
+					Val:   2,
+					Right: &TreeNode{Val: 3},
+				},
+			},
+			want: []int{1, 2, 3}, // Root -> Right -> Right
+		},
+		{
+			name: "Complete binary tree",
+			root: &TreeNode{
+				Val:   1,
+				Left:  &TreeNode{Val: 2, Left: &TreeNode{Val: 4}, Right: &TreeNode{Val: 5}},
+				Right: &TreeNode{Val: 3, Left: &TreeNode{Val: 6}, Right: &TreeNode{Val: 7}},
+			},
+			want: []int{1, 2, 4, 5, 3, 6, 7}, // Root -> Left Subtree -> Right Subtree
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := PreorderTraversal(tt.root)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("PreorderTraversal() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestPostorderTraversal checks various binary tree shapes using table-driven tests.
+func TestPostorderTraversal(t *testing.T) {
+	tests := []struct {
+		name string
+		root *TreeNode
+		want []int
+	}{
+		{
+			name: "Empty tree",
+			root: nil,
+			want: []int{},
+		},
+		{
+			name: "Single node tree",
+			root: &TreeNode{Val: 1},
+			want: []int{1},
+		},
+		{
+			name: "Left skewed tree",
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:  2,
+					Left: &TreeNode{Val: 3},
+				},
+			},
+			want: []int{3, 2, 1}, // Left -> Parent -> Root
+		},
+		{
+			name: "Right skewed tree",
+			root: &TreeNode{
+				Val: 1,
+				Right: &TreeNode{
+					Val:   2,
+					Right: &TreeNode{Val: 3},
+				},
+			},
+			want: []int{3, 2, 1}, // Right -> Parent -> Root
+		},
+		{
+			name: "Complete binary tree",
+			root: &TreeNode{
+				Val:   1,
+				Left:  &TreeNode{Val: 2, Left: &TreeNode{Val: 4}, Right: &TreeNode{Val: 5}},
+				Right: &TreeNode{Val: 3, Left: &TreeNode{Val: 6}, Right: &TreeNode{Val: 7}},
+			},
+			want: []int{4, 5, 2, 6, 7, 3, 1}, // Left Subtree -> Right Subtree -> Root
+		},
+		{
+			name: "Asymmetric tree with missing nodes",
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:   2,
+					Right: &TreeNode{Val: 4},
+				},
+				Right: &TreeNode{
+					Val:  3,
+					Left: &TreeNode{Val: 5},
+				},
+			},
+			want: []int{4, 2, 5, 3, 1},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := PostorderTraversal(tt.root)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("PostorderTraversal() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
