@@ -52,3 +52,34 @@ func wordBreakTwoTrie(s string, wordDict []string) []string {
 
 	return dp[0]
 }
+
+func wordBreakTwoBottomUpDP(s string, wordDict []string) []string {
+	n := len(s)
+	dp := make(map[int][]string)
+	set := make(map[string]struct{})
+	for _, word := range wordDict {
+		set[word] = struct{}{}
+	}
+	for start := n; start >= 0; start-- {
+		var validSentenses []string
+		for end := start; end < n; end++ {
+			curr := s[start: end + 1]
+			if _, exists := set[curr]; !exists {
+				continue
+			}
+			if end == n - 1 {
+				validSentenses = append(validSentenses, curr)
+			} else {
+				for _, w := range dp[end + 1] {
+					var strBuilder strings.Builder
+					strBuilder.WriteString(curr)
+					strBuilder.WriteString(" ")
+					strBuilder.WriteString(w)
+					validSentenses = append(validSentenses, strBuilder.String())
+				}
+			}
+		}
+		dp[start] = validSentenses
+	}
+	return dp[0]
+}
