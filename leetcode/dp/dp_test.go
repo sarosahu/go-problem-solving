@@ -201,3 +201,76 @@ func TestWordBreak(t *testing.T) {
 	}
 }
 
+func TestWordBreakTwo(t *testing.T) {
+	tests := []struct {
+		name     string
+		s        string
+		wordDict []string
+		want     []string
+	}{
+		{
+			name:     "Standard multiple results",
+			s:        "catsanddog",
+			wordDict: []string{"cat", "cats", "and", "sand", "dog"},
+			want:     []string{"cat sand dog", "cats and dog"},
+		},
+		{
+			name:     "Pineapple combinations",
+			s:        "pineapplepenapple",
+			wordDict: []string{"apple", "pen", "applepen", "pine", "pineapple"},
+			want:     []string{"pine apple pen apple", "pine applepen apple", "pineapple pen apple"},
+		},
+		{
+			name:     "No valid segmentation",
+			s:        "catsandog",
+			wordDict: []string{"cats", "dog", "sand", "and", "cat"},
+			want:     []string{},
+		},
+		{
+			name:     "Single character repetition",
+			s:        "aaaaaaa",
+			wordDict: []string{"a", "aa", "aaa"},
+			// Will generate many valid combinations
+			want: []string{
+				"a a a a a a a", "a a a a a aa", "a a a a aa a", "a a a a aaa",
+				"a a a aa a a", "a a a aa aa", "a a a aaa a", "a a aa a a a",
+				"a a aa a aa", "a a aa aa a", "a a aa aaa", "a a aaa a a",
+				"a a aaa aa", "a aa a a a a", "a aa a a aa", "a aa a aa a",
+				"a aa a aaa", "a aa aa a a", "a aa aa aa", "a aa aaa a",
+				"a aaa a a a", "a aaa a aa", "a aaa aa a", "a aaa aaa",
+				"aa a a a a a", "aa a a a aa", "aa a a aa a", "aa a a aaa",
+				"aa a aa a a", "aa a aa aa", "aa a aaa a", "aa aa a a a",
+				"aa aa a aa", "aa aa aa a", "aa aa aaa", "aa aaa a a",
+				"aa aaa aa", "aaa a a a a", "aaa a a aa", "aaa a aa a",
+				"aaa a aaa", "aaa aa a a", "aaa aa aa", "aaa aaa a",
+    		},
+		},
+		{
+			name:     "Exact match single word",
+			s:        "apple",
+			wordDict: []string{"apple"},
+			want:     []string{"apple"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wordBreakTwoTrie(tt.s, tt.wordDict)
+
+			// Sort both slices to ensure order independence in validation
+			sort.Strings(got)
+			sort.Strings(tt.want)
+
+			// Handle nil vs empty slice comparison gracefully
+			if len(got) == 0 && len(tt.want) == 0 {
+				return
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("wordBreak() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+
