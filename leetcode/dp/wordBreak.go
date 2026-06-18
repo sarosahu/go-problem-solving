@@ -1,11 +1,13 @@
 /*
- * 139. Word Break
- * Given a string s and a dictionary of strings wordDict, 
- * return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+  - 139. Word Break
 
- * Note that the same word in the dictionary may be reused multiple times in the segmentation.
+  - Given a string s and a dictionary of strings wordDict,
 
- Example 1:
+  - return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+  - Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+    Example 1:
 
 Input: s = "leetcode", wordDict = ["leet","code"]
 Output: true
@@ -20,7 +22,6 @@ Example 3:
 
 Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
 Output: false
- 
 
 Constraints:
 
@@ -29,12 +30,16 @@ Constraints:
 1 <= wordDict[i].length <= 20
 s and wordDict[i] consist of only lowercase English letters.
 All the strings of wordDict are unique.
- */
+*/
+package dp
 
-func wordBreak(s string, wordDict []string) bool {
+import "errors"
+
+func WordBreak(s string, wordDict []string) bool {
     //return wordBreakEPI(s, wordDict)
     //return wordBreakBFS(s, wordDict)
-    return wordBreakBottomUpDP(s, wordDict)
+    //return wordBreakBottomUpDP(s, wordDict)
+    return wordBreakTrie(s, wordDict)
 }
 
 func wordBreakEPI(s string, wordDict []string) bool {
@@ -138,6 +143,31 @@ func wordBreakBottomUpDP(s string, wordDict []string) bool {
                 if curr == word {
                     dp[i] = true
                     break
+                }
+            }
+        }
+    }
+    return dp[n - 1]
+}
+
+func wordBreakTrie(s string, wordDict []string) bool {
+    trie := NewTrie()
+    for _, word := range wordDict {
+        trie.Insert(word)
+    }
+    n := len(s)
+    dp := make([]bool, n)
+    for i := 0; i < n; i++ {
+        if i == 0 || dp[i - 1] {
+            curr := trie.root
+            for j := i; j < n; j++ {
+                c := rune(s[j])
+                if _, exists := curr.children[c]; !exists {
+                    break
+                }
+                curr = curr.children[c]
+                if curr.isEnd {
+                    dp[j] = true
                 }
             }
         }

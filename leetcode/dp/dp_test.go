@@ -112,3 +112,92 @@ func TestGenerateParenthesis(t *testing.T) {
 		})
 	}
 }
+
+func TestWordBreak(t *testing.T) {
+	tests := []struct {
+		name     string
+		s        string
+		wordDict []string
+		want     bool
+	}{
+		{
+			name:     "Standard true case",
+			s:        "leetcode",
+			wordDict: []string{"leet", "code"},
+			want:     true,
+		},
+		{
+			name:     "Reuse dictionary words",
+			s:        "applepenapple",
+			wordDict: []string{"apple", "pen"},
+			want:     true,
+		},
+		{
+			name:     "Standard false case",
+			s:        "catsandog",
+			wordDict: []string{"cats", "dog", "sand", "and", "cat"},
+			want:     false,
+		},
+		{
+			name:     "Single character match",
+			s:        "a",
+			wordDict: []string{"a"},
+			want:     true,
+		},
+		{
+			name:     "Single character mismatch",
+			s:        "b",
+			wordDict: []string{"a"},
+			want:     false,
+		},
+		{
+			name:     "Overlapping words requiring backtracking",
+			s:        "aaaaaaa",
+			wordDict: []string{"aaaa", "aaa"},
+			want:     true,
+		},
+		{
+			name:     "Empty dictionary",
+			s:        "abcdef",
+			wordDict: []string{},
+			want:     false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wordBreakEPI(tt.s, tt.wordDict)
+			if got != tt.want {
+				t.Errorf("wordBreak() = %v, want %v for string %q", got, tt.want, tt.s)
+			}
+		})
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wordBreakBFS(tt.s, tt.wordDict)
+			if got != tt.want {
+				t.Errorf("wordBreak() = %v, want %v for string %q", got, tt.want, tt.s)
+			}
+		})
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wordBreakBottomUpDP(tt.s, tt.wordDict)
+			if got != tt.want {
+				t.Errorf("wordBreak() = %v, want %v for string %q", got, tt.want, tt.s)
+			}
+		})
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := wordBreakTrie(tt.s, tt.wordDict)
+			if got != tt.want {
+				t.Errorf("wordBreak() = %v, want %v for string %q", got, tt.want, tt.s)
+			}
+		})
+	}
+}
+
