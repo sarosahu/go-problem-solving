@@ -186,3 +186,138 @@ func TestMergeKLists(t *testing.T) {
 		})
 	}
 }
+
+func TestCanBeValid(t *testing.T) {
+	tests := []struct {
+		name   string
+		s      string
+		locked string
+		want   bool
+	}{
+		{
+			name:   "LeetCode Example 1",
+			s:      "))()))",
+			locked: "010100",
+			want:   true,
+		},
+		{
+			name:   "LeetCode Example 2",
+			s:      "()()",
+			locked: "0000",
+			want:   true,
+		},
+		{
+			name:   "LeetCode Example 3",
+			s:      ")",
+			locked: "0",
+			want:   false, // Odd length
+		},
+		{
+			name:   "Already Valid and Locked",
+			s:      "(())",
+			locked: "1111",
+			want:   true,
+		},
+		{
+			name:   "Invalid and Locked",
+			s:      ")(((",
+			locked: "1111",
+			want:   false,
+		},
+		{
+			name:   "Too Many Closing Brackets Early",
+			s:      "))))((",
+			locked: "110000",
+			want:   false,
+		},
+		{
+			name:   "Empty String",
+			s:      "",
+			locked: "",
+			want:   true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := CanBeValid(tt.s, tt.locked)
+			if got != tt.want {
+				t.Errorf("canBeValid2() = %v, want %v for inputs s = %q, locked = %q", got, tt.want, tt.s, tt.locked)
+			}
+		})
+	}
+}
+
+func BenchmarkCanBeValid(b *testing.B) {
+	s := "))()))"
+	locked := "010100"
+	for i := 0; i < b.N; i++ {
+		CanBeValid(s, locked)
+	}
+}
+
+func TestCheckValidString(t *testing.T) {
+	tests := []struct {
+		name string
+		s    string
+		want bool
+	}{
+		{
+			name: "LeetCode Example 1",
+			s:    "()",
+			want: true,
+		},
+		{
+			name: "LeetCode Example 2",
+			s:    "(*)",
+			want: true, // * acts as empty string
+		},
+		{
+			name: "LeetCode Example 3",
+			s:    "(*))",
+			want: true, // * acts as '('
+		},
+		{
+			name: "Wildcard acts as closing bracket",
+			s:    "((*",
+			want: false, // * acts as ')'
+		},
+		{
+			name: "Invalid sequence early on",
+			s:    ")*",
+			want: false,
+		},
+		{
+			name: "Empty string",
+			s:    "",
+			want: true,
+		},
+		{
+			name: "Multiple wildcards making it valid",
+			s:    "***)))",
+			want: true,
+		},
+		{
+			name: "Too many closing brackets",
+			s:    "(((**))))",
+			want: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := CheckValidString(tt.s)
+			if got != tt.want {
+				t.Errorf("checkValidString(%q) = %v, want %v", tt.s, got, tt.want)
+			}
+		})
+	}
+}
+
+func BenchmarkCheckValidString(b *testing.B) {
+	s := "(((***)))(((***)))"
+	for i := 0; i < b.N; i++ {
+		CheckValidString(s)
+	}
+}
+
