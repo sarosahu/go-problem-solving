@@ -321,3 +321,66 @@ func BenchmarkCheckValidString(b *testing.B) {
 	}
 }
 
+func TestExistWordSearch(t *testing.T) {
+	tests := []struct {
+		name     string
+		board    [][]byte
+		word     string
+		expected bool
+	}{
+		{
+			name: "Word Exists - Horizontal and Vertical",
+			// [A B C E]
+			// [S F C S]
+			// [A D E E]
+			board: [][]byte{
+				{'A', 'B', 'C', 'E'},
+				{'S', 'F', 'C', 'S'},
+				{'A', 'D', 'E', 'E'},
+			},
+			word:     "ABCCED",
+			expected: true,
+		},
+		{
+			name: "Word Exists - Single Letter Match",
+			board: [][]byte{
+				{'A'},
+			},
+			word:     "A",
+			expected: true,
+		},
+		{
+			name: "Word Does Not Exist",
+			board: [][]byte{
+				{'A', 'B', 'C', 'E'},
+				{'S', 'F', 'C', 'S'},
+				{'A', 'D', 'E', 'E'},
+			},
+			word:     "ABCB",
+			expected: false, // Cannot reuse the same 'B'
+		},
+		{
+			name: "Word Longer Than Grid Elements",
+			board: [][]byte{
+				{'A', 'B'},
+			},
+			word:     "ABC",
+			expected: false,
+		},
+		{
+			name:     "Empty Grid",
+			board:    [][]byte{},
+			word:     "A",
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := exist(tt.board, tt.word)
+			if actual != tt.expected {
+				t.Errorf("expected %v, but got %v", tt.expected, actual)
+			}
+		})
+	}
+}

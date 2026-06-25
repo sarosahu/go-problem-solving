@@ -279,3 +279,89 @@ func TestPostorderTraversal(t *testing.T) {
 		})
 	}
 }
+
+func TestLevelOrder(t *testing.T) {
+	tests := []struct {
+		name     string
+		root     *TreeNode
+		expected [][]int
+	}{
+		{
+			name:     "Empty Tree (Edge Case Fix)",
+			root:     nil,
+			expected: [][]int{},
+		},
+		{
+			name: "Single Node Tree",
+			root: &TreeNode{Val: 1},
+			expected: [][]int{
+				{1},
+			},
+		},
+		{
+			name: "Standard Binary Tree",
+			//      3
+			//     / \
+			//    9   20
+			//       /  \
+			//      15   7
+			root: &TreeNode{
+				Val:  3,
+				Left: &TreeNode{Val: 9},
+				Right: &TreeNode{
+					Val:   20,
+					Left:  &TreeNode{Val: 15},
+					Right: &TreeNode{Val: 7},
+				},
+			},
+			expected: [][]int{
+				{3},
+				{9, 20},
+				{15, 7},
+			},
+		},
+		{
+			name: "Asymmetric Unbalanced Tree",
+			//      1
+			//     /
+			//    2
+			//   /
+			//  3
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:  2,
+					Left: &TreeNode{Val: 3},
+				},
+			},
+			expected: [][]int{
+				{1},
+				{2},
+				{3},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := levelOrder(tt.root)
+			
+			// DeepEqual checks multi-dimensional slices properly
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("expected %v, but got %v", tt.expected, actual)
+			}
+		})
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := levelOrderDfs(tt.root)
+			
+			// DeepEqual checks multi-dimensional slices properly
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("expected %v, but got %v", tt.expected, actual)
+			}
+		})
+	}
+}
+

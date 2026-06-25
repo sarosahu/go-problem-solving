@@ -1,6 +1,10 @@
 package trie
 
-import "testing"
+import (
+	"reflect"
+	"sort"
+	"testing"
+)
 
 func TestTrieA(t *testing.T) {
 	trie := NewTrieA()
@@ -109,6 +113,83 @@ func TestTrie(t *testing.T) {
 			actual := trie.StartsWith(tt.prefix)
 			if actual != tt.expected {
 				t.Errorf("StartsWith(%q) = %v; want %v", tt.prefix, actual, tt.expected)
+			}
+		})
+	}
+}
+
+func TestFindWords(t *testing.T) {
+	tests := []struct {
+		name     string
+		board    [][]byte
+		words    []string
+		want     []string
+	}{
+		{
+			name: "Standard Grid Case",
+			board: [][]byte{
+				{'o', 'a', 'a', 'n'},
+				{'e', 't', 'a', 'e'},
+				{'i', 'h', 'k', 'r'},
+				{'i', 'f', 'l', 'v'},
+			},
+			words: []string{"oath", "pea", "eat", "rain"},
+			want:  []string{"eat", "oath"},
+		},
+		{
+			name: "Prevent Duplicate Word Collection",
+			// The word "a" can be formed from 4 different cells, 
+			// but should only be reported once in the output.
+			board: [][]byte{
+				{'a', 'a'},
+				{'a', 'a'},
+			},
+			words: []string{"a"},
+			want:  []string{"a"},
+		},
+		{
+			name: "No Words Found",
+			board: [][]byte{
+				{'a', 'b'},
+				{'c', 'd'},
+			},
+			words: []string{"abcd", "xyz"},
+			want:  []string{},
+		},
+		{
+			name: "Overlapping Paths and Backtracking States",
+			// Verifies that backing out of a dead end doesn't corrupt state
+			board: [][]byte{
+				{'a', 'b', 'c'},
+				{'a', 'e', 'd'},
+				{'a', 'f', 'g'},
+			},
+			words: []string{"abcdefg", "aba"},
+			want:  []string{"abcdefg"},
+		},
+		{
+			name:  "Empty Board Edge Case",
+			board: [][]byte{},
+			words: []string{"hello"},
+			want:  []string{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := findWords(tt.board, tt.words)
+
+			// Sort slices to make testing order-independent
+			sort.Strings(got)
+			sort.Strings(tt.want)
+
+			// Gracefully handle comparison of nil vs empty slices
+			if len(got) == 0 && len(tt.want) == 0 {
+				return
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("findWords() = %v, want %v", got, tt.want)
 			}
 		})
 	}
