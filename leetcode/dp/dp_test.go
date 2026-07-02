@@ -344,3 +344,98 @@ func TestWordBreakTwoBottomUpDP(t *testing.T) {
 		})
 	}
 }
+
+func TestIsMatchDPR(t *testing.T) {
+	tests := []struct {
+		name    string
+		s       string
+		p       string
+		want    bool
+	}{
+		{
+			name: "Exact match",
+			s:    "aa",
+			p:    "aa",
+			want: true,
+		},
+		{
+			name: "Mismatch length",
+			s:    "aa",
+			p:    "a",
+			want: false,
+		},
+		{
+			name: "Star wildcard sequence matches zero repetitions",
+			s:    "ab",
+			p:    "a*ab",
+			want: true,
+		},
+		{
+			name: "Star wildcard matches multiple repetitions",
+			s:    "aab",
+			p:    "a*b",
+			want: true,
+		},
+		{
+			name: "Dot wildcard matches any single character",
+			s:    "ab",
+			p:    ".b",
+			want: true,
+		},
+		{
+			name: "Dot Star combination matches everything",
+			s:    "abdfghijk",
+			p:    ".*",
+			want: true,
+		},
+		{
+			name: "Complex nested wildcards",
+			s:    "mississippi",
+			p:    "mis*is*p*.",
+			want: false,
+		},
+		{
+			name: "Empty string and empty pattern match",
+			s:    "",
+			p:    "",
+			want: true,
+		},
+		{
+			name: "Empty string with optional pattern",
+			s:    "",
+			p:    "a*",
+			want: true,
+		},
+	}
+
+	// Test for Recursive brute force solution without memoization -- 
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := isMatchR(tt.s, tt.p)
+			if got != tt.want {
+				t.Errorf("isMatchDPR(%q, %q) = %v; want %v", tt.s, tt.p, got, tt.want)
+			}
+		})
+	}
+
+	// Test for Recursive solution with memoization -- 
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := isMatchDPR(tt.s, tt.p)
+			if got != tt.want {
+				t.Errorf("isMatchDPR(%q, %q) = %v; want %v", tt.s, tt.p, got, tt.want)
+			}
+		})
+	}
+
+	// Test for bottom up dynamic programming solution -- 
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := isMatchDP(tt.s, tt.p)
+			if got != tt.want {
+				t.Errorf("isMatchDPR(%q, %q) = %v; want %v", tt.s, tt.p, got, tt.want)
+			}
+		})
+	}
+}
+
