@@ -365,3 +365,257 @@ func TestLevelOrder(t *testing.T) {
 	}
 }
 
+func TestZigzagLevelOrderUsingList(t *testing.T) {
+
+	tests := []struct {
+		name     string
+		root     *TreeNode
+		expected [][]int
+	}{
+		{
+			name:     "Case 1: Empty Tree (Nil Root)",
+			root:     nil,
+			expected: [][]int{},
+		},
+		{
+			name:     "Case 2: Single Node Tree",
+			root:     &TreeNode{Val: 1},
+			expected: [][]int{{1}},
+		},
+		{
+			name: "Case 3: Unbalanced Left-Skewed Tree (Line)",
+			// 1 -> 2 -> 3 -> 4
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val: 2,
+					Left: &TreeNode{
+						Val: 3,
+						Left: &TreeNode{Val: 4},
+					},
+				},
+			},
+			expected: [][]int{
+				{1},
+				{2},
+				{3},
+				{4},
+			},
+		},
+		{
+			name: "Case 4: Unbalanced Right-Skewed Tree (Line)",
+			// 1 -> 2 -> 3 -> 4
+			root: &TreeNode{
+				Val: 1,
+				Right: &TreeNode{
+					Val: 2,
+					Right: &TreeNode{
+						Val: 3,
+						Right: &TreeNode{Val: 4},
+					},
+				},
+			},
+			expected: [][]int{
+				{1},
+				{2},
+				{3},
+				{4},
+			},
+		},
+		{
+			name: "Case 5: Perfect Symmetric Full Binary Tree",
+			//      1
+			//    /   \
+			//   2     3
+			//  / \   / \
+			// 4   5 6   7
+			root: &TreeNode{
+				Val: 1,
+				Left:  &TreeNode{Val: 2, Left: &TreeNode{Val: 4}, Right: &TreeNode{Val: 5}},
+				Right: &TreeNode{Val: 3, Left: &TreeNode{Val: 6}, Right: &TreeNode{Val: 7}},
+			},
+			expected: [][]int{
+				{1},
+				{3, 2},
+				{4, 5, 6, 7},
+			},
+		},
+		{
+			name: "Case 6: Deep Asymmetric Tree with Missing Children",
+			//        1
+			//       /
+			//      2
+			//       \
+			//        3
+			//       /
+			//      4
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val: 2,
+					Right: &TreeNode{
+						Val: 3,
+						Left: &TreeNode{Val: 4},
+					},
+				},
+			},
+			expected: [][]int{
+				{1},
+				{2},
+				{3},
+				{4},
+			},
+		},
+		{
+			name: "Case 7: Tree with Negative and Zero Values",
+			//      0
+			//    /   \
+			//  -5     10
+			root: &TreeNode{
+				Val:   0,
+				Left:  &TreeNode{Val: -5},
+				Right: &TreeNode{Val: 10},
+			},
+			expected: [][]int{
+				{0},
+				{10, -5},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name+"_LinkedList", func(t *testing.T) {
+			actual := zigzagLevelOrder(tt.root)
+			if !reflect.DeepEqual(actual, tt.expected) && !(len(actual) == 0 && len(tt.expected) == 0) {
+				t.Errorf("got %v, want %v", actual, tt.expected)
+			}
+		})
+	}
+}
+
+func TestZigzagLevelOrderUsingSlices(t *testing.T) {
+
+	tests := []struct {
+		name     string
+		root     *TreeNode
+		expected [][]int
+	}{
+		{
+			name:     "Case 1: Empty Tree (Nil Root)",
+			root:     nil,
+			expected: [][]int{},
+		},
+		{
+			name:     "Case 2: Single Node Tree",
+			root:     &TreeNode{Val: 1},
+			expected: [][]int{{1}},
+		},
+		{
+			name: "Case 3: Unbalanced Left-Skewed Tree (Line)",
+			// 1 -> 2 -> 3 -> 4
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val: 2,
+					Left: &TreeNode{
+						Val: 3,
+						Left: &TreeNode{Val: 4},
+					},
+				},
+			},
+			expected: [][]int{
+				{1},
+				{2},
+				{3},
+				{4},
+			},
+		},
+		{
+			name: "Case 4: Unbalanced Right-Skewed Tree (Line)",
+			// 1 -> 2 -> 3 -> 4
+			root: &TreeNode{
+				Val: 1,
+				Right: &TreeNode{
+					Val: 2,
+					Right: &TreeNode{
+						Val: 3,
+						Right: &TreeNode{Val: 4},
+					},
+				},
+			},
+			expected: [][]int{
+				{1},
+				{2},
+				{3},
+				{4},
+			},
+		},
+		{
+			name: "Case 5: Perfect Symmetric Full Binary Tree",
+			//      1
+			//    /   \
+			//   2     3
+			//  / \   / \
+			// 4   5 6   7
+			root: &TreeNode{
+				Val: 1,
+				Left:  &TreeNode{Val: 2, Left: &TreeNode{Val: 4}, Right: &TreeNode{Val: 5}},
+				Right: &TreeNode{Val: 3, Left: &TreeNode{Val: 6}, Right: &TreeNode{Val: 7}},
+			},
+			expected: [][]int{
+				{1},
+				{3, 2},
+				{4, 5, 6, 7},
+			},
+		},
+		{
+			name: "Case 6: Deep Asymmetric Tree with Missing Children",
+			//        1
+			//       /
+			//      2
+			//       \
+			//        3
+			//       /
+			//      4
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val: 2,
+					Right: &TreeNode{
+						Val: 3,
+						Left: &TreeNode{Val: 4},
+					},
+				},
+			},
+			expected: [][]int{
+				{1},
+				{2},
+				{3},
+				{4},
+			},
+		},
+		{
+			name: "Case 7: Tree with Negative and Zero Values",
+			//      0
+			//    /   \
+			//  -5     10
+			root: &TreeNode{
+				Val:   0,
+				Left:  &TreeNode{Val: -5},
+				Right: &TreeNode{Val: 10},
+			},
+			expected: [][]int{
+				{0},
+				{10, -5},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name+"_Slice", func(t *testing.T) {
+			actual := zigzagLevelOrder2(tt.root)
+			if !reflect.DeepEqual(actual, tt.expected) && !(len(actual) == 0 && len(tt.expected) == 0) {
+				t.Errorf("got %v, want %v", actual, tt.expected)
+			}
+		})
+	}
+}
+
