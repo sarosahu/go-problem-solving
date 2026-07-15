@@ -484,7 +484,7 @@ func TestZigzagLevelOrderUsingList(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name+"_LinkedList", func(t *testing.T) {
-			actual := zigzagLevelOrder(tt.root)
+			actual := zigzagLevelOrderUsingList(tt.root)
 			if !reflect.DeepEqual(actual, tt.expected) && !(len(actual) == 0 && len(tt.expected) == 0) {
 				t.Errorf("got %v, want %v", actual, tt.expected)
 			}
@@ -611,7 +611,7 @@ func TestZigzagLevelOrderUsingSlices(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name+"_Slice", func(t *testing.T) {
-			actual := zigzagLevelOrder2(tt.root)
+			actual := zigzagLevelOrderUsingSlices2(tt.root)
 			if !reflect.DeepEqual(actual, tt.expected) && !(len(actual) == 0 && len(tt.expected) == 0) {
 				t.Errorf("got %v, want %v", actual, tt.expected)
 			}

@@ -30,7 +30,8 @@ The number of nodes in the tree is in the range [0, 2000].
 -100 <= Node.val <= 100
  **/
 
-func zigzagLevelOrder(root *TreeNode) [][]int {
+// This is using Deque approach using container list
+func zigzagLevelOrderUsingList(root *TreeNode) [][]int {
     if root == nil {
         return [][]int{}
     }
@@ -74,7 +75,9 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
     return ans
 }
 
-func zigzagLevelOrder2(root *TreeNode) [][]int {
+// This is good -- easy to understand and improved version
+// We don't need to use deque, simple Queue would do the trick
+func zigzagLevelOrderUsingSlices(root *TreeNode) [][]int {
     if root == nil {
         return [][]int{}
     }
@@ -107,6 +110,52 @@ func zigzagLevelOrder2(root *TreeNode) [][]int {
             }
             if node.Right != nil {
                 queue = append(queue, node.Right)
+            }
+        }
+
+        // Add the current level to results and flip direction
+        result = append(result, levelNodes)
+        leftToRight = !leftToRight
+    }
+
+    return result
+}
+
+// This is best one -- we used our custom Queue implementation
+// which is a wrapper over slices.
+func zigzagLevelOrderUsingSlicesF(root *TreeNode) [][]int {
+    if root == nil {
+        return [][]int{}
+    }
+
+    var result [][]int
+    queue := Queue[*TreeNode]{}
+    queue.Enqueue(root)
+    leftToRight := true
+
+    for !queue.IsEmpty() {
+        levelSize := queue.Size()
+        levelNodes := make([]int, levelSize)
+
+        for i := 0; i < levelSize; i++ {
+            // Pop from the front of the queue
+            node, _ := queue.Dequeue()
+
+            // Calculate the correct insertion index based on direction
+            var index int
+            if leftToRight {
+                index = i
+            } else {
+                index = levelSize - 1 - i
+            }
+            levelNodes[index] = node.Val
+
+            // Enqueue children in standard left-to-right order
+            if node.Left != nil {
+                queue.Enqueue(node.Left)
+            }
+            if node.Right != nil {
+                queue.Enqueue(node.Right)
             }
         }
 
