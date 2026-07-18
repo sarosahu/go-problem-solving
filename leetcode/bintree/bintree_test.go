@@ -611,9 +611,94 @@ func TestZigzagLevelOrderUsingSlices(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name+"_Slice", func(t *testing.T) {
-			actual := zigzagLevelOrderUsingSlices2(tt.root)
+			actual := zigzagLevelOrderUsingSlicesF(tt.root)
 			if !reflect.DeepEqual(actual, tt.expected) && !(len(actual) == 0 && len(tt.expected) == 0) {
 				t.Errorf("got %v, want %v", actual, tt.expected)
+			}
+		})
+	}
+}
+
+func TestLevelOrderBottomBfs(t *testing.T) {
+	tests := []struct {
+		name     string
+		root     *TreeNode
+		expected [][]int
+	}{
+		{
+			name:     "Empty Tree",
+			root:     nil,
+			expected: [][]int{},
+		},
+		{
+			name: "Single Node",
+			root: &TreeNode{Val: 1},
+			expected: [][]int{
+				{1},
+			},
+		},
+		{
+			name: "Standard Binary Tree",
+			//      3
+			//     / \
+			//    9  20
+			//      /  \
+			//     15   7
+			root: &TreeNode{
+				Val:  3,
+				Left: &TreeNode{Val: 9},
+				Right: &TreeNode{
+					Val:   20,
+					Left:  &TreeNode{Val: 15},
+					Right: &TreeNode{Val: 7},
+				},
+			},
+			expected: [][]int{
+				{15, 7},
+				{9, 20},
+				{3},
+			},
+		},
+		{
+			name: "Asymmetric Left-Skewed Tree",
+			//      1
+			//     /
+			//    2
+			//   /
+			//  3
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:  2,
+					Left: &TreeNode{Val: 3},
+				},
+			},
+			expected: [][]int{
+				{3},
+				{2},
+				{1},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := levelOrderBottomBfs(tt.root)
+			
+			// DeepEqual checks multi-dimensional slice values and ordering
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("levelOrderBottomBfs() = %v, want %v", actual, tt.expected)
+			}
+		})
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := levelOrderBottomDfs(tt.root)
+			
+			// DeepEqual checks multi-dimensional slice values and ordering
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("levelOrderBottomBfs() = %v, want %v", actual, tt.expected)
 			}
 		})
 	}
