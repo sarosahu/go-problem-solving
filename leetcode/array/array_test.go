@@ -433,3 +433,57 @@ func TestMaxArea(t *testing.T) {
 	}
 }
 
+func TestCountSmaller(t *testing.T) {
+	tests := []struct {
+		name     string
+		nums     []int
+		expected []int
+	}{
+		{
+			name:     "Visual Walkthrough Example",
+			nums:     []int{5, 2, 6, 1},
+			expected: []int{2, 1, 1, 0},
+		},
+		{
+			name:     "LeetCode Example with Negative Numbers",
+			nums:     []int{-1, -1},
+			expected: []int{0, 0},
+		},
+		{
+			name:     "Handling Duplicates",
+			nums:     []int{2, 5, 2, 6, 1},
+			expected: []int{1, 2, 1, 1, 0}, // The first 2 only counts the '1' to its right, not the other '2'
+		},
+		{
+			name:     "Strictly Decreasing",
+			nums:     []int{5, 4, 3, 2, 1},
+			expected: []int{4, 3, 2, 1, 0},
+		},
+		{
+			name:     "Strictly Increasing",
+			nums:     []int{1, 2, 3, 4, 5},
+			expected: []int{0, 0, 0, 0, 0},
+		},
+		{
+			name:     "Empty Slice",
+			nums:     []int{},
+			expected: []int{},
+		},
+		{
+			name:     "Single Element",
+			nums:     []int{10},
+			expected: []int{0},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := countSmaller(tt.nums)
+			
+			// reflect.DeepEqual correctly compares the content and order of two slices
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("countSmaller(%v) = %v; want %v", tt.nums, actual, tt.expected)
+			}
+		})
+	}
+}
