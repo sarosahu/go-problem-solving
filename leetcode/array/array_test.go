@@ -384,3 +384,52 @@ func TestExistWordSearch(t *testing.T) {
 		})
 	}
 }
+
+func TestMaxArea(t *testing.T) {
+	tests := []struct {
+		name     string
+		height   []int
+		expected int
+	}{
+		{
+			name:     "Standard Example",
+			height:   []int{1, 8, 6, 2, 5, 4, 8, 3, 7},
+			expected: 49, // Formed by 8 at index 1 and 7 at index 8. Width = 7, Height = 7. Area = 49.
+		},
+		{
+			name:     "Minimum Length Array",
+			height:   []int{1, 1},
+			expected: 1, // Width = 1, Height = 1.
+		},
+		{
+			name:     "Uniform Heights",
+			height:   []int{5, 5, 5, 5, 5},
+			expected: 20, // Max width is best: index 0 to index 4. Width = 4, Height = 5.
+		},
+		{
+			name:     "Strictly Increasing Heights",
+			height:   []int{1, 2, 3, 4, 5},
+			expected: 6, // Formed by 2 at index 1 and 5 at index 4. Width = 3, Height = 2.
+		},
+		{
+			name:     "Strictly Decreasing Heights",
+			height:   []int{5, 4, 3, 2, 1},
+			expected: 6, // Formed by 5 at index 0 and 2 at index 3. Width = 3, Height = 2.
+		},
+		{
+			name:     "Deep Valley with High Edges",
+			height:   []int{10, 1, 1, 1, 10},
+			expected: 40, // Far edges match perfectly. Width = 4, Height = 10.
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := maxArea(tt.height)
+			if actual != tt.expected {
+				t.Errorf("maxArea(%v) = %d; want %d", tt.height, actual, tt.expected)
+			}
+		})
+	}
+}
+
