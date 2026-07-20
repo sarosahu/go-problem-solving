@@ -439,3 +439,85 @@ func TestIsMatchDPR(t *testing.T) {
 	}
 }
 
+func TestUniquePathsWithObstacles(t *testing.T) {
+	tests := []struct {
+		name         string
+		obstacleGrid [][]int
+		expected     int
+	}{
+		{
+			name: "Standard 3x3 Grid with One Obstacle",
+			obstacleGrid: [][]int{
+				{0, 0, 0},
+				{0, 1, 0},
+				{0, 0, 0},
+			},
+			expected: 2,
+		},
+		{
+			name: "Small 2x2 Grid with One Obstacle",
+			obstacleGrid: [][]int{
+				{0, 1},
+				{0, 0},
+			},
+			expected: 1,
+		},
+		{
+			name: "Obstacle at the Start Position",
+			obstacleGrid: [][]int{
+				{1, 0},
+				{0, 0},
+			},
+			expected: 0,
+		},
+		{
+			name: "Obstacle at the End Position",
+			obstacleGrid: [][]int{
+				{0, 0},
+				{0, 1},
+			},
+			expected: 0,
+		},
+		{
+			name: "Completely Blocked Row",
+			obstacleGrid: [][]int{
+				{0, 0, 0},
+				{1, 1, 1},
+				{0, 0, 0},
+			},
+			expected: 0,
+		},
+		{
+			name: "Single Cell Grid - No Obstacle",
+			obstacleGrid: [][]int{
+				{0},
+			},
+			expected: 1,
+		},
+		{
+			name: "Single Cell Grid - With Obstacle",
+			obstacleGrid: [][]int{
+				{1},
+			},
+			expected: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := uniquePathsWithObstaclesDP(tt.obstacleGrid)
+			if actual != tt.expected {
+				t.Errorf("uniquePathsWithObstacles() = %d; want %d", actual, tt.expected)
+			}
+		})
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := uniquePathsWithObstaclesDPE(tt.obstacleGrid)
+			if actual != tt.expected {
+				t.Errorf("uniquePathsWithObstacles() = %d; want %d", actual, tt.expected)
+			}
+		})
+	}
+}
