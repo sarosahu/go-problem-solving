@@ -704,3 +704,98 @@ func TestLevelOrderBottomBfs(t *testing.T) {
 	}
 }
 
+// helper to convert the flattened tree into a slice for easy validation
+func treeToSlice(root *TreeNode) []int {
+	var result []int
+	curr := root
+	for curr != nil {
+		if curr.Left != nil {
+			return []int{-1} // Error state: Left pointer must be nil
+		}
+		result = append(result, curr.Val)
+		curr = curr.Right
+	}
+	return result
+}
+
+func TestFlatten(t *testing.T) {
+	tests := []struct {
+		name     string
+		root     *TreeNode
+		expected []int
+	}{
+		{
+			name: "Standard Binary Tree",
+			//      1
+			//     / \
+			//    2   5
+			//   / \   \
+			//  3   4   6
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:   2,
+					Left:  &TreeNode{Val: 3},
+					Right: &TreeNode{Val: 4},
+				},
+				Right: &TreeNode{
+					Val:   5,
+					Right: &TreeNode{Val: 6},
+				},
+			},
+			expected: []int{1, 2, 3, 4, 5, 6},
+		},
+		{
+			name:     "Empty Tree",
+			root:     nil,
+			expected: nil,
+		},
+		{
+			name:     "Single Node Tree",
+			root:     &TreeNode{Val: 1},
+			expected: []int{1},
+		},
+		{
+			name: "Left Skewed Tree",
+			//    1
+			//   /
+			//  2
+			// /
+			//3
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:  2,
+					Left: &TreeNode{Val: 3},
+				},
+			},
+			expected: []int{1, 2, 3},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Run your Morris Traversal function
+			flattenUStack(tt.root)
+
+			// Convert results and assert equality
+			actual := treeToSlice(tt.root)
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("flatten() failed for %s. Got %v, want %v", tt.name, actual, tt.expected)
+			}
+		})
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Run your Morris Traversal function
+			flattenE(tt.root)
+
+			// Convert results and assert equality
+			actual := treeToSlice(tt.root)
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("flatten() failed for %s. Got %v, want %v", tt.name, actual, tt.expected)
+			}
+		})
+	}
+}
