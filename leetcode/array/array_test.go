@@ -3,6 +3,7 @@ package array
 import (
 	"fmt"
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -487,3 +488,80 @@ func TestCountSmaller(t *testing.T) {
 		})
 	}
 }
+
+// helper to check if two slices contain identical elements ignoring their index sequence
+func matchWithoutOrder(a, b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	// Sort copies of the slices to safely compare them
+	cA := append([]int(nil), a...)
+	cB := append([]int(nil), b...)
+	sort.Ints(cA)
+	sort.Ints(cB)
+	
+	for i := range cA {
+		if cA[i] != cB[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func TestTopKFrequentAlgorithms(t *testing.T) {
+	tests := []struct {
+		name     string
+		nums     []int
+		k        int
+		expected []int
+	}{
+		{
+			name:     "Standard Example Matrix",
+			//nums:     []int{1, 1, 1, 2, 2, 3},
+			nums:     []int{5, 1, 4, 5, 2, 4, 5},
+			k:        2,
+			//expected: []int{1, 2},
+			expected: []int{4, 5},
+		},
+		{
+			name:     "Single Element Array",
+			nums:     []int{1},
+			k:        1,
+			expected: []int{1},
+		},
+		{
+			name:     "All Elements Have Uniform Frequencies",
+			nums:     []int{4, 5, 6},
+			k:        2,
+			expected: []int{4, 5}, // {4, 6} or {5, 6} are also logically valid
+		},
+		{
+			name:     "Negative Numbers Included",
+			nums:     []int{-1, -1, -2, 2, 2, 2},
+			k:        2,
+			expected: []int{2, -1},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// 1. Validate the Bucket Sort Strategy
+			bucketResult := topKFrequentBucketSort(tt.nums, tt.k)
+			if !matchWithoutOrder(bucketResult, tt.expected) {
+				// Special exception check for uniform frequency flexibility
+				if tt.name != "All Elements Have Uniform Frequencies" || len(bucketResult) != tt.k {
+					t.Errorf("topKFrequent() = %v; want elements matching %v", bucketResult, tt.expected)
+				}
+			}
+
+			// 2. Validate the Min-Heap Strategy
+			heapResult := topKFrequentMinHeap(tt.nums, tt.k)
+			if !matchWithoutOrder(heapResult, tt.expected) {
+				if tt.name != "All Elements Have Uniform Frequencies" || len(heapResult) != tt.k {
+					t.Errorf("topKFrequentMinHeap() = %v; want elements matching %v", heapResult, tt.expected)
+				}
+			}
+		})
+	}
+}
+
