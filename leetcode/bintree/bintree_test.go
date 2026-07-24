@@ -799,3 +799,176 @@ func TestFlatten(t *testing.T) {
 		})
 	}
 }
+
+
+func TestVerticalOrder(t *testing.T) {
+	tests := []struct {
+		name     string
+		root     *TreeNode
+		expected [][]int
+	}{
+		{
+			name:     "Empty Tree",
+			root:     nil,
+			expected: [][]int{},
+		},
+		{
+			name:     "Single Node Tree",
+			root:     &TreeNode{Val: 1},
+			expected: [][]int{{1}},
+		},
+		{
+			name: "Standard Balanced Tree",
+			//      3
+			//     / \
+			//    9   20
+			//       /  \
+			//      15   7
+			root: &TreeNode{
+				Val:  3,
+				Left: &TreeNode{Val: 9},
+				Right: &TreeNode{
+					Val:   20,
+					Left:  &TreeNode{Val: 15},
+					Right: &TreeNode{Val: 7},
+				},
+			},
+			expected: [][]int{{9}, {3, 15}, {20}, {7}},
+		},
+		{
+			name: "Multiple Nodes Same Row and Column",
+			//      1
+			//     / \
+			//    2   3
+			//   / \ / \
+			//  4   5 6  7
+			// Nodes 5 and 6 both overlap at column 0. 
+			// Left-to-right requirement dictates 5 must come before 6.
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:   2,
+					Left:  &TreeNode{Val: 4},
+					Right: &TreeNode{Val: 5},
+				},
+				Right: &TreeNode{
+					Val:   3,
+					Left:  &TreeNode{Val: 6},
+					Right: &TreeNode{Val: 7},
+				},
+			},
+			expected: [][]int{{4}, {2}, {1, 5, 6}, {3}, {7}},
+		},
+		{
+			name: "Skewed Left Tree",
+			//      1
+			//     /
+			//    2
+			//   /
+			//  3
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:  2,
+					Left: &TreeNode{Val: 3},
+				},
+			},
+			expected: [][]int{{3}, {2}, {1}},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := verticalOrder(tt.root)
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("verticalOrder() = %v, want %v", actual, tt.expected)
+			}
+		})
+	}
+}
+
+func TestVerticalOrderE(t *testing.T) {
+	tests := []struct {
+		name     string
+		root     *TreeNode
+		expected [][]int
+	}{
+		{
+			name:     "Empty Tree",
+			root:     nil,
+			expected: [][]int{},
+		},
+		{
+			name:     "Single Node Tree",
+			root:     &TreeNode{Val: 1},
+			expected: [][]int{{1}},
+		},
+		{
+			name: "Standard Balanced Tree",
+			//      3
+			//     / \
+			//    9   20
+			//       /  \
+			//      15   7
+			root: &TreeNode{
+				Val:  3,
+				Left: &TreeNode{Val: 9},
+				Right: &TreeNode{
+					Val:   20,
+					Left:  &TreeNode{Val: 15},
+					Right: &TreeNode{Val: 7},
+				},
+			},
+			expected: [][]int{{9}, {3, 15}, {20}, {7}},
+		},
+		{
+			name: "Multiple Nodes Same Row and Column",
+			//      1
+			//     / \
+			//    2   3
+			//   / \ / \
+			//  4   5 6  7
+			// Nodes 5 and 6 both overlap at column 0. 
+			// Left-to-right requirement dictates 5 must come before 6.
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:   2,
+					Left:  &TreeNode{Val: 4},
+					Right: &TreeNode{Val: 5},
+				},
+				Right: &TreeNode{
+					Val:   3,
+					Left:  &TreeNode{Val: 6},
+					Right: &TreeNode{Val: 7},
+				},
+			},
+			expected: [][]int{{4}, {2}, {1, 5, 6}, {3}, {7}},
+		},
+		{
+			name: "Skewed Left Tree",
+			//      1
+			//     /
+			//    2
+			//   /
+			//  3
+			root: &TreeNode{
+				Val: 1,
+				Left: &TreeNode{
+					Val:  2,
+					Left: &TreeNode{Val: 3},
+				},
+			},
+			expected: [][]int{{3}, {2}, {1}},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := verticalOrderE(tt.root)
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("verticalOrder() = %v, want %v", actual, tt.expected)
+			}
+		})
+	}
+}
