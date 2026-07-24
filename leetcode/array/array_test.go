@@ -565,3 +565,60 @@ func TestTopKFrequentAlgorithms(t *testing.T) {
 	}
 }
 
+func TestNextPermutation(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    []int
+		expected []int
+	}{
+		{
+			name:     "Standard Progression",
+			input:    []int{1, 2, 3},
+			expected: []int{1, 3, 2},
+		},
+		{
+			name:     "Completely Descending (Wraps to Smallest)",
+			input:    []int{3, 2, 1},
+			expected: []int{1, 2, 3},
+		},
+		{
+			name:     "Pivot in Middle",
+			input:    []int{1, 1, 5},
+			expected: []int{1, 5, 1},
+		},
+		{
+			name:     "Handling Duplicates Comfortably",
+			input:    []int{2, 3, 1, 3, 3},
+			expected: []int{2, 3, 3, 1, 3},
+		},
+		{
+			name:     "Single Element Array",
+			input:    []int{1},
+			expected: []int{1},
+		},
+		{
+			name:     "Empty Array",
+			input:    []int{},
+			expected: []int{},
+		},
+		{
+			name:     "Complex Rearrangement",
+			input:    []int{1, 3, 5, 4, 3, 2, 1},
+			expected: []int{1, 4, 1, 2, 3, 3, 5},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Copy input because nextPermutation mutates the slice in-place
+			nums := make([]int, len(tt.input))
+			copy(nums, tt.input)
+
+			nextPermutation(nums)
+
+			if !reflect.DeepEqual(nums, tt.expected) {
+				t.Errorf("For %v: got %v, want %v", tt.input, nums, tt.expected)
+			}
+		})
+	}
+}
