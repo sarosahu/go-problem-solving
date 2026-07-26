@@ -278,3 +278,59 @@ func TestPermuteUsingNextPermutationLogic(t *testing.T) {
 		})
 	}
 }
+
+func TestGeneratePalindromes(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected []string
+	}{
+		{
+			name:     "Impossible Palindrome (Too many odd counts)",
+			input:    "abc",
+			expected: []string{},
+		},
+		{
+			name:     "Single Character",
+			input:    "a",
+			expected: []string{"a"},
+		},
+		{
+			name:     "Simple Even Palindrome",
+			input:    "aabb",
+			expected: []string{"abba", "baab"},
+		},
+		{
+			name:     "Simple Odd Palindrome",
+			input:    "aabbh",
+			expected: []string{"abhba", "bahab"},
+		},
+		{
+			name:     "All Same Characters",
+			input:    "aaaa",
+			expected: []string{"aaaa"},
+		},
+		{
+			name:     "Empty String",
+			input:    "",
+			expected: []string{""},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := generatePalindromes(tt.input)
+
+			if len(actual) != len(tt.expected) {
+				t.Fatalf("For string %q: expected length %d, got %d", tt.input, len(tt.expected), len(actual))
+			}
+
+			// Verify that every generated palindrome matches an expected entry
+			for _, generatedItem := range actual {
+				if !slices.Contains(tt.expected, generatedItem) {
+					t.Errorf("For string %q: produced unexpected palindrome %q", tt.input, generatedItem)
+				}
+			}
+		})
+	}
+}
