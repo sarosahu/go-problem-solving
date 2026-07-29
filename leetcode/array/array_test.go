@@ -565,7 +565,7 @@ func TestTopKFrequentAlgorithms(t *testing.T) {
 	}
 }
 
-func TestNextPermutation(t *testing.T) {
+func TestNextPermutationUsingNextPermute(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    []int
@@ -618,6 +618,116 @@ func TestNextPermutation(t *testing.T) {
 
 			if !reflect.DeepEqual(nums, tt.expected) {
 				t.Errorf("For %v: got %v, want %v", tt.input, nums, tt.expected)
+			}
+		})
+	}
+}
+
+func TestGetPermutationUsingFactorial(t *testing.T) {
+	tests := []struct {
+		name     string
+		n        int
+		k        int
+		expected string
+	}{
+		{
+			name:     "Smallest configuration",
+			n:        1,
+			k:        1,
+			expected: "1",
+		},
+		{
+			name:     "N=3, First Permutation",
+			n:        3,
+			k:        1,
+			expected: "123",
+		},
+		{
+			name:     "N=3, Middle Permutation",
+			n:        3,
+			k:        3,
+			expected: "213",
+		},
+		{
+			name:     "N=3, Last Permutation",
+			n:        3,
+			k:        6,
+			expected: "321",
+		},
+		{
+			name:     "N=4, Arbitrary Index",
+			n:        4,
+			k:        9,
+			expected: "2314",
+		},
+		{
+			name:     "Large N (Would crash or TLE original logic)",
+			n:        9,
+			k:        278054,
+			expected: "792316485",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := getPermutationUsingNextPermute(tt.n, tt.k)
+			if actual != tt.expected {
+				t.Errorf("getPermutation(%d, %d) = %q, want %q", tt.n, tt.k, actual, tt.expected)
+			}
+		})
+	}
+}
+
+func TestGetPermutation(t *testing.T) {
+	tests := []struct {
+		name     string
+		n        int
+		k        int
+		expected string
+	}{
+		{
+			name:     "Smallest configuration",
+			n:        1,
+			k:        1,
+			expected: "1",
+		},
+		{
+			name:     "N=3, First Permutation",
+			n:        3,
+			k:        1,
+			expected: "123",
+		},
+		{
+			name:     "N=3, Middle Permutation",
+			n:        3,
+			k:        3,
+			expected: "213",
+		},
+		{
+			name:     "N=3, Last Permutation",
+			n:        3,
+			k:        6,
+			expected: "321",
+		},
+		{
+			name:     "N=4, Arbitrary Index",
+			n:        4,
+			k:        9,
+			expected: "2314",
+		},
+		{
+			name:     "Large N (Would crash or TLE original logic)",
+			n:        9,
+			k:        278054,
+			expected: "792316485",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := getPermutationUsingFactorial(tt.n, tt.k)
+			if actual != tt.expected {
+				t.Errorf("getPermutation(%d, %d) = %q, want %q", tt.n, tt.k, actual, tt.expected)
 			}
 		})
 	}

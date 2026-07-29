@@ -1,6 +1,7 @@
 package backtrack
 
 import (
+	"fmt"
 	"reflect"
 	"slices"
 	"sort"
@@ -329,6 +330,160 @@ func TestGeneratePalindromes(t *testing.T) {
 			for _, generatedItem := range actual {
 				if !slices.Contains(tt.expected, generatedItem) {
 					t.Errorf("For string %q: produced unexpected palindrome %q", tt.input, generatedItem)
+				}
+			}
+		})
+	}
+}
+
+// Helper function to turn a slice of slices into a standardized string map signature
+// This allows order-independent comparison of the results.
+func makePowerSetMap(set [][]int) map[string]bool {
+	m := make(map[string]bool)
+	for _, sub := range set {
+		// Clone and sort the subset so [1, 2] and [2, 1] look identical
+		cloned := make([]int, len(sub))
+		copy(cloned, sub)
+		slices.Sort(cloned)
+		m[fmt.Sprintf("%v", cloned)] = true
+	}
+	return m
+}
+
+func TestSubsets(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    []int
+		expected [][]int
+	}{
+		{
+			name:  "Empty Set",
+			input: []int{},
+			expected: [][]int{
+				{},
+			},
+		},
+		{
+			name:  "Single Element",
+			input: []int{0},
+			expected: [][]int{
+				{},
+				{0},
+			},
+		},
+		{
+			name:  "Standard Three Element Set",
+			input: []int{1, 2, 3},
+			expected: [][]int{
+				{},
+				{1}, {2}, {3},
+				{1, 2}, {1, 3}, {2, 3},
+				{1, 2, 3},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := subsets(tt.input)
+
+			if len(actual) != len(tt.expected) {
+				t.Fatalf("For %v: expected power set size %d, got %d", tt.input, len(tt.expected), len(actual))
+			}
+
+			actualMap := makePowerSetMap(actual)
+			expectedMap := makePowerSetMap(tt.expected)
+
+			// Cross-verify all keys match
+			for key := range actualMap {
+				if !expectedMap[key] {
+					t.Errorf("For %v: generated unexpected subset %s", tt.input, key)
+				}
+			}
+		})
+	}
+}
+
+// Helper function to turn a slice of slices into an order-independent string map
+func makeCombinationMap(combinations [][]int) map[string]bool {
+	m := make(map[string]bool)
+	for _, comb := range combinations {
+		// Clone and sort the individual combination so [2, 3] and [3, 2] look identical
+		cloned := make([]int, len(comb))
+		copy(cloned, comb)
+		slices.Sort(cloned)
+		m[fmt.Sprintf("%v", cloned)] = true
+	}
+	return m
+}
+
+func TestCombinationSum(t *testing.T) {
+	tests := []struct {
+		name       string
+		candidates []int
+		target     int
+		expected   [][]int
+	}{
+		{
+			name:       "Standard Test Case",
+			candidates: []int{2, 3, 6, 7},
+			target:     7,
+			expected: [][]int{
+				{2, 2, 3},
+				{7},
+			},
+		},
+		{
+			name:       "Multiple Reuse Options",
+			candidates: []int{2, 3, 5},
+			target:     8,
+			expected: [][]int{
+				{2, 2, 2, 2},
+				{2, 3, 3},
+				{3, 5},
+			},
+		},
+		{
+			name:       "No Combinations Possible",
+			candidates: []int{2},
+			target:     1,
+			expected:   [][]int{},
+		},
+		{
+			name:       "Target Matches Single Element",
+			candidates: []int{1},
+			target:     1,
+			expected: [][]int{
+				{1},
+			},
+		},
+		{
+			name:       "Target Matches Single Element with Larger Numbers Available",
+			candidates: []int{1},
+			target:     2,
+			expected: [][]int{
+				{1, 1},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := combinationSum(tt.candidates, tt.target)
+
+			if len(actual) != len(tt.expected) {
+				t.Fatalf("For candidates %v and target %d: expected length %d, got %d", 
+					tt.candidates, tt.target, len(tt.expected), len(actual))
+			}
+
+			actualMap := makeCombinationMap(actual)
+			expectedMap := makeCombinationMap(tt.expected)
+
+			// Verify that every combination found matches the expected pool
+			for key := range actualMap {
+				if !expectedMap[key] {
+					t.Errorf("For candidates %v and target %d: produced unexpected combination %s", 
+						tt.candidates, tt.target, key)
 				}
 			}
 		})

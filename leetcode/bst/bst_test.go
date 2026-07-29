@@ -312,3 +312,59 @@ func TestIsValidBSTBfs(t *testing.T) {
 		})
 	}
 }
+
+func TestLadderLength(t *testing.T) {
+	tests := []struct {
+		name      string
+		beginWord string
+		endWord   string
+		wordList  []string
+		expected  int
+	}{
+		{
+			name:      "Standard Case (beginWord NOT in wordList)",
+			beginWord: "hit",
+			endWord:   "cog",
+			wordList:  []string{"hot", "dot", "dog", "lot", "log", "cog"},
+			expected:  5, // hit -> hot -> dot -> dog -> cog
+		},
+		{
+			name:      "beginWord ALREADY in wordList",
+			beginWord: "hot",
+			endWord:   "dog",
+			wordList:  []string{"hot", "dog", "dot"},
+			expected:  3, // hot -> dot -> dog
+		},
+		{
+			name:      "End Word Missing From Dict",
+			beginWord: "hit",
+			endWord:   "cog",
+			wordList:  []string{"hot", "dot", "dog", "lot", "log"},
+			expected:  0, // Impossible because cog isn't in wordList
+		},
+		{
+			name:      "No Path Possible",
+			beginWord: "hit",
+			endWord:   "cog",
+			wordList:  []string{"hot", "dot", "dog", "lim", "log", "cog"},
+			expected:  5, // The path is broken because "lot" is missing
+		},
+		{
+			name:      "Single Letter Transformation",
+			beginWord: "a",
+			endWord:   "c",
+			wordList:  []string{"a", "b", "c"},
+			expected:  2, // a -> c
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := ladderLength(tt.beginWord, tt.endWord, tt.wordList)
+			if actual != tt.expected {
+				t.Errorf("ladderLength(%q, %q) = %d; want %d", 
+					tt.beginWord, tt.endWord, actual, tt.expected)
+			}
+		})
+	}
+}
