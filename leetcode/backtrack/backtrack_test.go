@@ -489,3 +489,104 @@ func TestCombinationSum(t *testing.T) {
 		})
 	}
 }
+
+
+// Helper function to sort the outer and inner slices so we can compare results reliably
+func canonicalize(grid [][]int) [][]int {
+	for i := range grid {
+		slices.Sort(grid[i])
+	}
+	slices.SortFunc(grid, func(a, b []int) int {
+		if len(a) != len(b) {
+			if len(a) < len(b) {
+				return -1
+			}
+			return 1
+		}
+		for i := range a {
+			if a[i] != b[i] {
+				if a[i] < b[i] {
+					return -1
+				}
+				return 1
+			}
+		}
+		return 0
+	})
+	return grid
+}
+
+func TestCombinationSum2(t *testing.T) {
+	tests := []struct {
+		name       string
+		candidates []int
+		target     int
+		want       [][]int
+	}{
+		{
+			name:       "Standard LeetCode Example 1",
+			candidates: []int{10, 1, 2, 7, 6, 1, 5},
+			target:     8,
+			want: [][]int{
+				{1, 1, 6},
+				{1, 2, 5},
+				{1, 7},
+				{2, 6},
+			},
+		},
+		{
+			name:       "Standard LeetCode Example 2",
+			candidates: []int{2, 5, 2, 1, 2},
+			target:     5,
+			want: [][]int{
+				{1, 2, 2},
+				{5},
+			},
+		},
+		{
+			name:       "The Bug Fix Test Case (Consecutive Identical Elements)",
+			candidates: []int{1, 1},
+			target:     2,
+			want: [][]int{
+				{1, 1},
+			},
+		},
+		{
+			name:       "No Valid Combinations",
+			candidates: []int{2, 4, 6},
+			target:     5,
+			want:       [][]int{},
+		},
+		{
+			name:       "Target Matches Single Element",
+			candidates: []int{5},
+			target:     5,
+			want: [][]int{
+				{5},
+			},
+		},
+		{
+			name:       "Large Target with Small Elements",
+			candidates: []int{1, 1, 1, 1},
+			target:     3,
+			want: [][]int{
+				{1, 1, 1},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Run the implementation
+			got := combinationSum2(tt.candidates, tt.target)
+
+			// Normalize both got and want to ensure ordering doesn't break tests
+			gotClean := canonicalize(got)
+			wantClean := canonicalize(tt.want)
+
+			if !reflect.DeepEqual(gotClean, wantClean) {
+				t.Errorf("combinationSum2() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
