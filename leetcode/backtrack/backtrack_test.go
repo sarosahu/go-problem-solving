@@ -590,3 +590,73 @@ func TestCombinationSum2(t *testing.T) {
 		})
 	}
 }
+
+func TestCombinationSum3(t *testing.T) {
+	tests := []struct {
+		name string
+		k    int
+		n    int
+		want [][]int
+	}{
+		{
+			name: "Standard LeetCode Example 1",
+			k:    3,
+			n:    7,
+			want: [][]int{
+				{1, 2, 4},
+			},
+		},
+		{
+			name: "Standard LeetCode Example 2",
+			k:    3,
+			n:    9,
+			want: [][]int{
+				{1, 2, 6},
+				{1, 3, 5},
+				{2, 3, 4},
+			},
+		},
+		{
+			name: "No Combinations Possible (Sum too small)",
+			k:    4,
+			n:    1,
+			want: [][]int{},
+		},
+		{
+			name: "No Combinations Possible (Sum too large for 9 digits)",
+			k:    2,
+			n:    18, // Max possible for 2 unique digits is 8 + 9 = 17
+			want: [][]int{},
+		},
+		{
+			name: "Single Maximum Digits Case",
+			k:    9,
+			n:    45, // 1+2+3+4+5+6+7+8+9 = 45
+			want: [][]int{
+				{1, 2, 3, 4, 5, 6, 7, 8, 9},
+			},
+		},
+		{
+			name: "Smallest Valid Input Case",
+			k:    1,
+			n:    1,
+			want: [][]int{
+				{1},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := combinationSum3(tt.k, tt.n)
+
+			// Normalize both got and want to ensure ordering differences don't fail tests
+			gotClean := canonicalize(got)
+			wantClean := canonicalize(tt.want)
+
+			if !reflect.DeepEqual(gotClean, wantClean) {
+				t.Errorf("combinationSum3(%d, %d) = %v, want %v", tt.k, tt.n, got, tt.want)
+			}
+		})
+	}
+}
