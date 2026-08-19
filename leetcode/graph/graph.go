@@ -24,7 +24,7 @@ func NewGraph(n int) *Graph {
 	graph := &Graph{
 		Nodes: make([]*Node, n),  // Pre-allocates a slice of size
 	}
-	for i := 0; i < n; i++ {
+	for i := range n {
 		graph.Nodes[i] = NewNode(i)
 	}
 

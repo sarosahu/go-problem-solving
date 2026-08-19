@@ -660,3 +660,157 @@ func TestCombinationSum3(t *testing.T) {
 		})
 	}
 }
+
+
+func TestFactorialCombination(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    int
+		expected [][]int
+	}{
+		{
+			name:     "Base Case 8",
+			input:    8,
+			expected: [][]int{{2, 4}, {2, 2, 2}},
+		},
+		{
+			name:     "Base Case 12",
+			input:    12,
+			expected: [][]int{{2, 6}, {2, 2, 3}, {3, 4}},
+		},
+		{
+			name:     "Prime Number 7 (Should have no factors)",
+			input:    7,
+			expected: [][]int{},
+		},
+		{
+			name:     "Small Prime 2 (Should have no factors)",
+			input:    2,
+			expected: [][]int{},
+		},
+		{
+			name:     "Smallest Composite 4",
+			input:    4,
+			expected: [][]int{{2, 2}},
+		},
+		{
+			name:     "Perfect Square 16",
+			input:    16,
+			expected: [][]int{{2, 8}, {2, 2, 4}, {2, 2, 2, 2}, {4, 4}},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := factorialCombination(tt.input)
+			
+			// If both slices are empty, consider them equal
+			if len(actual) == 0 && len(tt.expected) == 0 {
+				return
+			}
+			
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("factorialCombination(%d) = %v; want %v", tt.input, actual, tt.expected)
+			}
+		})
+	}
+}
+
+func TestSubsetsWithDup(t *testing.T) {
+	tests := []struct {
+		name     string
+		nums     []int
+		expected [][]int
+	}{
+		{
+			name: "Standard Duplicates",
+			nums: []int{1, 2, 2},
+			expected: [][]int{
+				{},
+				{1},
+				{1, 2},
+				{1, 2, 2},
+				{2},
+				{2, 2},
+			},
+		},
+		{
+			name: "All Same Elements",
+			nums: []int{2, 2, 2},
+			expected: [][]int{
+				{},
+				{2},
+				{2, 2},
+				{2, 2, 2},
+			},
+		},
+		{
+			name: "No Duplicates",
+			nums: []int{1, 2, 3},
+			expected: [][]int{
+				{},
+				{1},
+				{1, 2},
+				{1, 2, 3},
+				{1, 3},
+				{2},
+				{2, 3},
+				{3},
+			},
+		},
+		{
+			name: "Negative Numbers",
+			nums: []int{0, -1, -1},
+			expected: [][]int{
+				{},
+				{-1},
+				{-1, -1},
+				{-1, -1, 0},
+				{-1, 0},
+				{0},
+			},
+		},
+		{
+			name:     "Single Element",
+			nums:     []int{0},
+			expected: [][]int{{}, {0}},
+		},
+		{
+			name:     "Empty Input",
+			nums:     []int{},
+			expected: [][]int{{}},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := subsetsWithDup(tt.nums)
+
+			if len(actual) != len(tt.expected) {
+				t.Fatalf("subsetsWithDup(%v) returned %d subsets, want %d", tt.nums, len(actual), len(tt.expected))
+			}
+
+			// Sort individual nested subsets so we can compare content directly
+			for i := range actual {
+				slices.Sort(actual[i])
+			}
+			for i := range tt.expected {
+				slices.Sort(tt.expected[i])
+			}
+
+			// Verify each expected subset exists in the actual results
+			for _, exp := range tt.expected {
+				found := false
+				for _, act := range actual {
+					if slices.Equal(exp, act) {
+						found = true
+						break
+					}
+				}
+				if !found {
+					t.Errorf("subsetsWithDup(%v) missing expected subset: %v\nGot: %v", tt.nums, exp, actual)
+				}
+			}
+		})
+	}
+}

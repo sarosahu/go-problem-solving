@@ -3,10 +3,12 @@ package graph
 /*
  * 207. Course Schedule
  *
- * There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+ * There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1.
+ * You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must
+ * take course bi first if you want to take course ai.
 
-For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
-Return true if you can finish all courses. Otherwise, return false.
+ * For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+ * Return true if you can finish all courses. Otherwise, return false.
 
 Example 1:
 
@@ -14,6 +16,7 @@ Input: numCourses = 2, prerequisites = [[1,0]]
 Output: true
 Explanation: There are a total of 2 courses to take.
 To take course 1 you should have finished course 0. So it is possible.
+
 Example 2:
 
 Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
@@ -35,15 +38,19 @@ func canFinish(numCourses int, prerequisites [][]int) bool {
 		}
 	}
 
-	visited := make(map[int]struct{})
+	//visited := make(map[int]struct{})
+	visitedCount := 0
 	for !queue.IsEmpty() {
 		curr, exist := queue.Dequeue()
-		if exist {
-			visited[curr.ID] = struct{}{}
+		if !exist {
+			continue
 		}
-		if len(visited) == numCourses {
+		//visited[curr.ID] = struct{}{}
+		visitedCount++
+
+		/*if visitedCount == numCourses {
 			return true
-		}
+		}*/
 		for i := 0; i < len(curr.Edges); i++ {
 			edgeNode := curr.Edges[i]
 			inDegree[edgeNode.ID]--
@@ -52,11 +59,11 @@ func canFinish(numCourses int, prerequisites [][]int) bool {
 			}
 		}
 	}
-	return len(visited) == numCourses
+	return visitedCount == numCourses
 }
 
 func addPrerequisites(graph *Graph, prerequisites [][]int, inDegree []int) {
-	for i := 0; i < len(prerequisites); i++ {
+	for i := range prerequisites {
 		srcId, destId := prerequisites[i][1], prerequisites[i][0]
 		src := graph.Nodes[srcId]
 		dest := graph.Nodes[destId]
