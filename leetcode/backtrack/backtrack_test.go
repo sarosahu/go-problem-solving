@@ -402,6 +402,26 @@ func TestSubsets(t *testing.T) {
 			}
 		})
 	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := subsetsUsingBitmask(tt.input)
+
+			if len(actual) != len(tt.expected) {
+				t.Fatalf("For %v: expected power set size %d, got %d", tt.input, len(tt.expected), len(actual))
+			}
+
+			actualMap := makePowerSetMap(actual)
+			expectedMap := makePowerSetMap(tt.expected)
+
+			// Cross-verify all keys match
+			for key := range actualMap {
+				if !expectedMap[key] {
+					t.Errorf("For %v: generated unexpected subset %s", tt.input, key)
+				}
+			}
+		})
+	}
 }
 
 // Helper function to turn a slice of slices into an order-independent string map

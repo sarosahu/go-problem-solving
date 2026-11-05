@@ -49,7 +49,24 @@ func backtrackSubsets(start int, nums []int, comb []int, res *[][]int) {
 	}
 }
 
-// TODO
 func subsetsUsingBitmask(nums []int) [][]int {
-	return nil
+	res := [][]int{}
+    n := 1 << len(nums)
+    for k := 0; k < n; k++ {
+        subset := convertIntToSet(k, nums)
+        res = append(res, subset)
+    }
+    return res
+}
+
+func convertIntToSet(x int, nums []int) []int {
+    idx := 0
+    subset := []int{}
+    for k := x; k > 0; k >>= 1 {
+        if (k & 1) == 1 {
+            subset = append(subset, nums[idx])
+        }
+        idx++
+    }
+    return subset
 }
