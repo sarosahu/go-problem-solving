@@ -833,4 +833,36 @@ func TestSubsetsWithDup(t *testing.T) {
 			}
 		})
 	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := subsetsWithDupUsingBitmask(tt.nums)
+
+			if len(actual) != len(tt.expected) {
+				t.Fatalf("subsetsWithDupUsingBitmask(%v) returned %d subsets, want %d", tt.nums, len(actual), len(tt.expected))
+			}
+
+			// Sort individual nested subsets so we can compare content directly
+			for i := range actual {
+				slices.Sort(actual[i])
+			}
+			for i := range tt.expected {
+				slices.Sort(tt.expected[i])
+			}
+
+			// Verify each expected subset exists in the actual results
+			for _, exp := range tt.expected {
+				found := false
+				for _, act := range actual {
+					if slices.Equal(exp, act) {
+						found = true
+						break
+					}
+				}
+				if !found {
+					t.Errorf("subsetsWithDup(%v) missing expected subset: %v\nGot: %v", tt.nums, exp, actual)
+				}
+			}
+		})
+	}
 }

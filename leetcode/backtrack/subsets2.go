@@ -48,3 +48,36 @@ func backtrackSubsetsWithDup(res *[][]int, selected *[]int, input []int, idx int
         *selected = (*selected)[:len(*selected) - 1]
     }
 }
+
+func subsetsWithDupUsingBitmask(nums []int) [][]int {
+    res := [][]int{}
+    // 1. Sort the numbers so duplicates are adjacent
+    slices.Sort(nums)
+    
+    totalSubsets := 1 << len(nums)
+    for mask := 0; mask < totalSubsets; mask++ {
+        isDuplicate := false
+        subset := []int{}
+        
+        for i := 0; i < len(nums); i++ {
+            // Check if the i-th bit is set in the mask
+            if (mask & (1 << i)) != 0 {
+                // Duplicate elimination condition:
+                // If this element is the same as the previous one,
+                // and the previous one was NOT picked (its bit is 0),
+                // this entire mask will generate a duplicate subset. Skip it.
+                if i > 0 && nums[i] == nums[i-1] && (mask & (1 << (i-1))) == 0 {
+                    isDuplicate = true
+                    break
+                }
+                subset = append(subset, nums[i])
+            }
+        }
+        
+        // Only append if the mask represents a unique subset configuration
+        if !isDuplicate {
+            res = append(res, subset)
+        }
+    }
+    return res
+}
